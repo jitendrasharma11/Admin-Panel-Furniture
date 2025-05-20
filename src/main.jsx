@@ -32,47 +32,49 @@ import View_Faq from './pages/Faq/View_faq'
 import Add_Product from './pages/Product/Add_Product'
 import View_Product from './pages/Product/View_Product'
 import Order from './pages/Order/Order'
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
-     <BrowserRouter>
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
       <Routes>
+         <Route path='/' element={<Login />} />
+
         <Route path='/' element={<MainLayout />}>
-        
+
           <Route path='/user' element={<User />} />
-        <Route path='/dashboard' element={<DashBoard />} />
-        <Route path='/contact-enquiry' element={<Contact_Enquiry />} />
-        <Route path='/newsletters' element={<Newslatters />} />
-        <Route path='/add-color' element={<Add_Color />} />
-        <Route path='/view-color' element={<View_Color />} />
-        <Route path='/add-material' element={<Add_Material />} />
-        <Route path='/view-material' element={<View_Material />} />
-        <Route path='/add-category' element={<Add_Category />} />
-        <Route path='/view-category' element={<View_Category />} />  
-        <Route path='/add-Sub-category' element={<Add_Sub_Category />} />
-        <Route path='/view-Sub-category' element={<View_Sub_Category />} />   
-        <Route path='/add-Sub-category_2' element={<Add_Sub_Category_2 />} />
-        <Route path='/view-Sub-category_2' element={<View_Sub_Category_2 />} /> 
-        <Route path='/add-why' element={<Add_Why />} />
-        <Route path='/view-why' element={<View_why />} />
-        <Route path='/add-slider' element={<Add_Slider />} />
-        <Route path='/view-slider' element={<View_Slider />} />
-        <Route path='/add-country' element={<Add_Country />} />
-        <Route path='/view-country' element={<View_Country />} />
-        <Route path='/add-testimonials' element={<Add_Testimonial />} />
-        <Route path='/view-testimonials' element={<View_Testimonial />} />
-        <Route path='/add-faq' element={<Add_Faq/>} />
-        <Route path='/view-faq' element={<View_Faq />} />
-        <Route path='/add-product' element={<Add_Product/>} />
-        <Route path='/view-product' element={<View_Product />} />
-        <Route path='/order' element={<Order />} />
+          <Route path='/dashboard' element={<DashBoard />} />
+          <Route path='/contact-enquiry' element={<Contact_Enquiry />} />
+          <Route path='/newsletters' element={<Newslatters />} />
+          <Route path='/add-color' element={<Add_Color />} />
+          <Route path='/view-color' element={<View_Color />} />
+          <Route path='/add-material' element={<Add_Material />} />
+          <Route path='/view-material' element={<View_Material />} />
+          <Route path='/add-category' element={<Add_Category />} />
+          <Route path='/view-category' element={<View_Category />} />
+          <Route path='/add-Sub-category' element={<Add_Sub_Category />} />
+          <Route path='/view-Sub-category' element={<View_Sub_Category />} />
+          <Route path='/add-Sub-category_2' element={<Add_Sub_Category_2 />} />
+          <Route path='/view-Sub-category_2' element={<View_Sub_Category_2 />} />
+          <Route path='/add-why' element={<Add_Why />} />
+          <Route path='/view-why' element={<View_why />} />
+          <Route path='/add-slider' element={<Add_Slider />} />
+          <Route path='/view-slider' element={<View_Slider />} />
+          <Route path='/add-country' element={<Add_Country />} />
+          <Route path='/view-country' element={<View_Country />} />
+          <Route path='/add-testimonials' element={<Add_Testimonial />} />
+          <Route path='/view-testimonials' element={<View_Testimonial />} />
+          <Route path='/add-faq' element={<Add_Faq />} />
+          <Route path='/view-faq' element={<View_Faq />} />
+          <Route path='/add-product' element={<Add_Product />} />
+          <Route path='/view-product' element={<View_Product />} />
+          <Route path='/order' element={<Order />} />
         </Route>
-        
-        <Route path='/login' element={<Login />} />
 
-        </Routes>
+       
 
-        
-        </BrowserRouter>
-    </StrictMode>,
-  )
+      </Routes>
+
+
+    </BrowserRouter>
+  </StrictMode>,
+)
 
