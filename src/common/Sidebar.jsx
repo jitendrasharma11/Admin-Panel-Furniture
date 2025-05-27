@@ -36,7 +36,7 @@ export default function Sidebar() {
                        {/*  // eslint-disable-next-line no-unused-vars */}
                         {menulist.map((items,index) => {
                             return (
-                                <li className='cursor-pointer'>
+                                <li className='cursor-pointer' key={index}>
 
                                     <div onClick={() => setMenu(items.id == menu ? -1 : items.id)}
                                         className='flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100'>

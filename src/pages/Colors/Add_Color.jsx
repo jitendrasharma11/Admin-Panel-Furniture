@@ -1,76 +1,103 @@
-import React from 'react'
-import { Link } from 'react-router'
+import axios from 'axios';
+import React, { useState } from 'react'
+import { SketchPicker } from 'react-color';
+import { Link, useNavigate } from 'react-router';
+import { toast, ToastContainer } from 'react-toastify';
+export default function Addcolor() {
 
-import { ColorPicker, useColor } from "react-color-palette";
-import "react-color-palette/css";
 
-export default function add_color() {
+  let [colorFromValue, setcolorFromValue] = useState({
+    colorName: '',
+    colorCode: '',
+    colorOrder: ''
+  })
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [color, setColor] = useColor("#561ecb");
+  let baseUrl = import.meta.env.VITE_APIBASEURL
+
+  let navigation = useNavigate()
+
+  const handleChangeComplete = (newColor) => {
+    let obj = { ...colorFromValue }
+    obj['colorCode'] = newColor.hex;
+    setcolorFromValue(obj)
+    // console.log(obj['colorCode'])
+  };
+
+  // console.log(colorFromValue)
+
+
+  let colorSave = (event) => {
+    event.preventDefault()
+
+    axios.post(`${baseUrl}color/insert`, colorFromValue)
+      .then((res) => res.data)
+      .then((finalRes) => {
+        if (finalRes.status) {
+          toast.success(finalRes.msg)
+          setcolorFromValue({
+            colorName: '',
+            colorCode: '',
+            colorOrder: ''
+          })
+          setTimeout(() => {
+            navigation('/view-color')
+          },2000)
+        }
+        else {
+          toast.error(finalRes.msg)
+        }
+      })
+  }
+
   return (
-    <div>
-      <section className='w-full'>
-        <div className='border-b-2 text-gray-300'></div>
-        <div className='py-3'>
-          <nav className='mt-1'>
-            <ul className='flex items-center'>
-              <li> <Link to={'/dashboard'}><span className='font-bold text-gray-800'>Home </span> </Link> </li>&nbsp;
-              <li> <Link to={'/add-color'}><span className='font-bold text-gray-800'>/&nbsp;Color</span> </Link> </li>
-              <li> <span className='font-bold text-gray-800'>/&nbsp;Add</span></li>
-            </ul>
-
-          </nav>
+    <>
+      <ToastContainer />
+      <div className='w-full mx-auto text-md font-medium my-3 text-gray-700'>
+        <p className='flex items-center gap-3'>
+          <Link to={'/dashboard'} className='hover:text-blue-600'>Home</Link>
+          <Link to={'/color/add'} className='hover:text-blue-600'> / &nbsp; Color </Link>
+          <span className=' text-gray-500'>  / &nbsp; Add </span>
+        </p>
+        <hr className="bg-[#ccc] h-px border-0 my-2" />
+      </div>
+      <section className='mt-5 max-w-full rounded-md  ' style={{ border: "1px solid #ccc" }} id='addColor'>
+        <div className=' bg-slate-100 flex p-2 justify-between items-center form-heading'>
+          <h3 className='text-[20px] font-semibold'>Add Colors</h3>
         </div>
-        <div className='border-b-2 text-gray-300'></div>
-        <div className='w-full min-h-[620px]'>
-          <div className='max-w-[1220px] mx-auto py-5'>
-        
+        <div>
+          <form action="" onSubmit={colorSave} className='p-2'>
+            <label htmlFor="" className='text-[16px] font-semibold'>Color Name</label>
+            <input type="text" placeholder='Enter Color Name' name="colorName" value={colorFromValue.colorName} id="" className='text-sm w-full border-2 shadow-sm border-gray-300 h-[40px] p-2 rounded-sm mt-1'
+              onChange={(e) => {
+                let obj = { ...colorFromValue }
+                obj['colorName'] = e.target.value
+                // console.log(obj['colorName'])
+                setcolorFromValue(obj)
+                // console.log(e.target.value)
+              }}
+            />
+            <div className='my-4'>
 
-          <h3 className='text-[26px] p-2 border rounded-t-md font-semibold border-slate-400 bg-gray-200'>Add Color</h3>
-              <form  action="/" className=' py-3 px-2 border border-t-0 rounded-b-md border-slate-400' autoComplete='off'>
+              <label htmlFor="" className='text-[16px] font-semibold'>Color Picker</label>
+              <SketchPicker color={colorFromValue.colorCode} onChangeComplete={handleChangeComplete} />
+            </div>
+            <label htmlFor="" className='text-[16px] font-semibold'>Order</label>
+            <input type="number" placeholder='Enter Order' value={colorFromValue.colorOrder} name="colorOrder" id="" className='text-sm w-full border-2 shadow-sm border-gray-300 h-[40px] p-2 rounded-sm mt-1'
 
+              onChange={(e) => {
+                let obj = { ...colorFromValue }
+                obj['colorOrder'] = e.target.value
+                setcolorFromValue(obj)
+              }}
 
-                <div>
+            />
 
-                  <div className='mb-5 p-1'>
-                    <label for="name" className='p-1 block font-medium text-gray-900'>Color Name </label>
-                    <input type='name' name='colour_name' id='cname' className='text-[20px] border-2 py-2.5 px-2 block shadow-md
-                                     border-gray-400 w-full rounded-lg focus:border-blue-500' placeholder='Color Name' />
-                  </div>
-                  <div className='mb-5 p-1 w-[200px]'>
-                   
-                  <ColorPicker color={color} onChange={setColor} />
-                  
-                  </div>
+            <button className='text-white bg-purple-700 border-0 my-5 rounded-sm p-2'>Add Color</button>
+          </form>
 
-                  <div className='mb-5 p-1'>
-                    <label for="order" className='p-1 block font-medium text-gray-900'>Order</label>
-                    <input type='number' name='color_order' id='corder' className='text-[20px] border-2 py-2.5 px-2 block shadow-md
-                                     border-gray-400 w-full rounded-lg focus:border-blue-500' placeholder='Enter Order' />
-                  </div>
-                  <button className='text-white bg-purple-500 hover:bg-purple-700 font-medium rounded-lg py-3 px-2 mx-1.5'>Add Color
-
-                  </button>
-                </div>
-
-
-              </form>
-
-
-           
-          </div>
         </div>
-       
       </section>
 
-
-
-
-
-
-
-    </div>
+    </>
   )
 }
-export { add_color }

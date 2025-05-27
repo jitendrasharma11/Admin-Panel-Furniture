@@ -1,99 +1,147 @@
-import React from 'react'
-import { Link } from 'react-router'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FaFilter } from "react-icons/fa";
-import { FaPen } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
-export default function view_color() {
-  return (
-    <div>
- <section className='w-full'>
-                <div className='border-b-2 text-gray-300'></div>
-                <div className='py-3'>
-                    <nav className='mt-1'>
-                        <ul className='flex items-center'>
-                            <li> <Link to={'/dashboard'}><span className='font-bold text-gray-800'>Home </span> </Link> </li>&nbsp;
-                            <li> <Link to={'/user'}><span className='font-bold text-gray-800'>/&nbsp;Color</span> </Link> </li>
-                            <li> <span className='font-bold text-gray-800'>/&nbsp;View</span></li>
-                        </ul>
+export default function ViewColor() {
+    const [ids, setIds] = useState([]);
+    const [getColorData, setGetColorData] = useState([]);
+    const baseUrl = import.meta.env.VITE_APIBASEURL;
 
-                    </nav>
-                </div>
-                <div className='border-b-2 text-gray-300'></div>
-                <div className='w-full min-h-[620px]'>
-                    <div className='max-w-[1220px] mx-auto py-5'>
-                        <div className='flex items-center justify-between bg-slate-100 py-3 px-4 border rounded-t-md border-slate-400'>
+    const colorView = () => {
+        axios.get(`${baseUrl}color/view`)
+            .then((res) => res.data)
+            .then((finalRes) => {
+                setGetColorData(finalRes.data);
+            });
+    };
 
-                            <h3 className='text-[26px] font-semibold'>View Color</h3>
-                            <div className='flex justify-between'>
-                                <div className='cursor-pointer text-white w-[40px] h-[40px] rounded-lg bg-blue-700 hover:bg-blue-900  mx-3'>
-                                <FaFilter className='text-white my-3  mx-2.5' />
-                                </div>
-                                <button className='text-white font-medium px-4 bg-green-700 rounded-lg focus:outline-none hover:bg-green-900'>
-                                    Change Status
-                                </button>
-                                <button className='text-white font-medium px-4 mx-4 bg-red-700 rounded-lg focus:outline-none hover:bg-red-900'>
-                                    Delete
-                                </button>
-                            </div>
-    </div>
-    <div className='border border-slate-400 border-t-0 rounded-b-md'>
+    useEffect(() => {
+        colorView();
+    }, []);
 
-    <div className='overflow-x-auto'>
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            const allIds = getColorData.map(item => item._id);
+            setIds(allIds);
+        } else {
+            setIds([]);
+        }
+    };
 
-        <table className='w-full text-gray-500'>
-            <thead className='text-gray-900 text-[12px] uppercase bg-gray-50'>
-                <tr>
-                    <th>
-                    <input type='checkbox' className='text-blue-600 text-sm rounded-sm w-4 h-4 border-gray-400 '/>
-                    </th>
-                    <th scope='col' className='px-6 py-3'>ColorName</th>
-                    <th scope='col' className='w-[12%]'>Code</th>
-                    <th scope='col' className='w-[15%]'>Order</th>
-                    <th scope='col' className='w-[11%]'>Status</th>
-                    <th scope='col' className='w[6%]'>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr className='bg-white hover:bg-gray-50'>
-                    <th className='w-4 p-4'>
-                    <input type='checkbox' className='text-blue-600 text-sm rounded-sm w-4 h-4 border-gray-400 '/> 
-                    </th>
-                    <th scope='row' className=' flex items-center text-[15px] px-6 py-4'>
-                        <div className='px-6 py-4'>
-                            <div className='text-base font-semibold'>Red</div>
-                            </div>
-                        </th>
-                    <th className='text-[15px] px-6  py-4'>	#er33rv</th>
-                    <th className=' text-[15px] px-6  py-4'>1</th>
-                    <th className=' px-6 py-4'>
-                    <button className='text-white font-medium px-5 py-2 bg-green-700 rounded-lg focus:outline-none hover:bg-green-900'>
-                                    Active
-                                </button>
-                    </th>
-                    <th className='px-2 py-4'>
-                      
-                        <div className='w-[40px]  flex items-center justify-center h-[40px] rounded-[50%] bg-blue-700 hover:bg-blue-800'>
-                        <Link to={'/user'}>
-                        <FaPen className='text-white ' />
-                        </Link>
+
+    let getAllCheckedvalue = (event) => {
+        if (event.target.checked && !ids.includes(event.target.value)) {
+            setIds([...ids, event.target.value])
+        }
+        else {
+            // let filnalArray=ids.filter((v)=>v!=event.target.value)
+            setIds(ids.filter((v) => v != event.target.value))
+        }
+    }
+
+    const colorMultipleDelete = () => {
+        axios.post(`${baseUrl}color/delete`, { ids })
+            .then((res) => res.data)
+            .then((finalRes) => {
+                console.log(finalRes);
+                colorView();
+                setIds([]);
+            });
+    };
+    useEffect(() => {
+        console.log(ids)
+    }, [ids])
+
+    return (
+        <>
+            <div className='w-full mx-auto text-md font-medium my-3 text-gray-700'>
+                <p className='flex items-center gap-3'>
+                    <Link to={'/dashboard'} className='hover:text-blue-600'>Home</Link>
+                    <Link to={'/color/add'} className='hover:text-blue-600'> / &nbsp; Color </Link>
+                    <span className='text-gray-500'> / &nbsp; View </span>
+                </p>
+                <hr className="bg-[#ccc] h-px border-0 my-2" />
+            </div>
+
+            <section className='mt-5 max-w-full rounded-md' style={{ border: "1px solid #ccc" }} id='userForm'>
+                <div className='bg-slate-100 flex p-4 justify-between items-center form-heading'>
+                    <div>
+                        <h3 className='text-[26px] font-semibold'>View Color</h3>
+                    </div>
+                    <div className='flex items-center gap-2 mr-3'>
+                        <div className='text-white font-bold w-[40px] h-[40px] rounded-sm flex justify-center items-center bg-blue-700'>
+                            <FaFilter />
                         </div>
-                       
-                    </th>
-                </tr>
-               
-            </tbody>
-        </table>
-    </div>
-    </div>
-    </div>
-   </div>
-    </section>
+                        <button className='bg-green-700 rounded-sm py-2 px-4 font-semibold text-sm text-white'>Change Status</button>
+                        <button onClick={colorMultipleDelete} className='bg-red-700 rounded-sm py-2.5 px-5 font-semibold text-sm text-white'>Delete</button>
+                    </div>
+                </div>
 
-
-
-
-
-    </div>
-  )
+                <div className='form px-4'>
+                    <table className='w-full text-sm text-left text-gray-500'>
+                        <thead className='text-xs h-[40px] text-gray-700 uppercase bg-gray-50'>
+                            <tr>
+                                <th className='lg:w-[3%] sm:w-[7%]'>
+                                    <div className='flex items-center'>
+                                        <input
+                                            type="checkbox"
+                                            className='w-4 h-4'
+                                            onChange={handleSelectAll}
+                                            checked={getColorData.length > 0 && ids.length === getColorData.length}
+                                        />
+                                    </div>
+                                </th>
+                                <th scope='col' className='w-[20%]'>Color Name</th>
+                                <th scope='col' className='w-[12%]'>Code</th>
+                                <th scope='col' className='w-[15%]'>Order</th>
+                                <th scope='col' className='w-[11%]'>Status</th>
+                                <th scope='col' className='w-[6%]'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {getColorData.length >= 1 ? (
+                                getColorData.map((value) => {
+                                    const { _id, colorName, colorCode, colorOrder, colorStatus } = value;
+                                    return (
+                                        <tr key={_id} className='bg-white border-gray-200 hover:bg-gray-50'>
+                                            <td className='w-[3%] py-7'>
+                                                <input
+                                                    onChange={getAllCheckedvalue}
+                                                    type="checkbox"
+                                                    className='w-4 h-4'
+                                                    checked={ ids.includes(value._id)}
+                                                    value={value._id}
+                                                />
+                                            </td>
+                                            <td className='text-base font-semibold text-black'>{colorName}</td>
+                                            <td>{colorCode}</td>
+                                            <td>{colorOrder}</td>
+                                            <td>
+                                                {colorStatus ? (
+                                                    <button className='bg-gradient-to-r from-green-400 via-green-500 to-green-600 py-1.5 text-white font-semibold px-5 rounded-sm'>Active</button>
+                                                ) : (
+                                                    <button className='bg-gradient-to-r from-red-400 via-red-500 to-red-600 py-1.5 text-white font-semibold px-5 rounded-sm'>Deactive</button>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <button className='flex justify-center items-center text-white bg-blue-500 w-[40px] h-[40px] rounded-full'>
+                                                    <MdEdit className='text-[18px]' />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            ) : (
+                                <tr>
+                                    <td className='text-center text-black text-xl' colSpan={6}>Color Not Found</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </>
+    );
 }
-export{view_color}

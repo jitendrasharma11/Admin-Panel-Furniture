@@ -1,58 +1,74 @@
-import React from 'react'
-import { Link } from 'react-router'
+import axios from 'axios'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { toast, ToastContainer } from 'react-toastify'
 
 
 export default function Add_Country() {
 
+    let [countryName, setcountryName] = useState("")
+
+    let [countryOrder, setcountryOrder] = useState("")
+
+    let baseUrl = import.meta.env.VITE_APIBASEURL
+
+    let navigation = useNavigate()
+    let countrySave = (event) => {
+        event.preventDefault()
+
+        let countryData = {
+            countryName,
+            countryOrder
+        }
+
+        axios.post(`${baseUrl}country/add`, countryData)
+            .then((res) => res.data)
+            .then((finalRes) => {
+                if (finalRes.status) {
+                    toast.success(finalRes.msg)
+                    setcountryName("")
+                    setcountryOrder("")
+                    setTimeout(() => {
+                        navigation("/view-country")
+                    }, 2000)
+                }
+                else {
+                    toast.error(finalRes.msg)
+                }
+            })
+
+    }
+
     return (
-    <div>
-
- <section className='w-full'>
-                <div className='border-b-2 text-gray-300'></div>
-                <div className='py-3'>
-                    <nav className='mt-1'>
-                        <ul className='flex items-center'>
-                            <li> <Link to={'/dashboard'}><span className='font-bold text-gray-800'>Home </span> </Link> </li>&nbsp;
-                            <li> <Link to={'/user'}><span className='font-bold text-gray-800'>/&nbsp;Country</span> </Link> </li>
-                            <li> <span className='font-bold text-gray-800'>/&nbsp;Add</span></li>
-                        </ul>
-
-                    </nav>
+       <>
+            <ToastContainer />
+            <div className='w-full mx-auto text-md font-medium my-3 text-gray-700'>
+                <p className='flex items-center gap-3'>
+                    <Link to={'/dashboard'} className='hover:text-blue-600'>Home</Link>
+                    <Link to={'/country/add'} className='hover:text-blue-600'> / &nbsp; Country </Link>
+                    <span className=' text-gray-500'>  / &nbsp; Add </span>
+                </p>
+                <hr className="bg-[#ccc] h-px border-0 my-2" />
+            </div>
+            <section className='mt-5 max-w-full rounded-md  ' style={{ border: "1px solid #ccc" }} id='addMetrials'>
+                <div className=' bg-slate-100 flex p-4 justify-between items-center form-heading'>
+                    <h3 className='text-[26px] font-semibold'>Add Country</h3>
                 </div>
-                <div className='border-b-2 text-gray-300'></div>
-                <div className='w-full min-h-[620px]'>
-                    <div className='max-w-[1220px] mx-auto py-5'>
-                    <h3 className='text-[26px] p-2 border rounded-t-md font-semibold border-slate-400 bg-gray-200'>Add Country</h3>
-                    <form className=' py-3 px-2 border border-t-0 rounded-b-md border-slate-400' autoComplete='off'>
-                            
-                            
-<div>
+                <div>
+                    <form action="" onSubmit={countrySave} className='p-2'>
+                        <label htmlFor="" className='text-[16px] font-semibold'>Country Name</label>
+                        <input type="text" value={countryName} onChange={(e) => setcountryName(e.target.value)} placeholder='Enter Color Name' name="countryName" id="" className='text-sm w-full border-2 shadow-sm border-gray-300 h-[40px] p-2 rounded-sm mb-5' />
 
-    <div className='mb-5 p-1'>
-        <label for="name" className='p-1 block font-medium text-gray-900'>Country Name </label>
-        <input type='name' name='country_name' id='country_name'  className='text-[20px] border-2 py-2.5 px-2 block shadow-md
-         border-gray-400 w-full rounded-lg focus:border-blue-500' placeholder='Country Name' />
-    </div>
+                        <label htmlFor="" className='text-[16px] font-semibold'>Order</label>
+                        <input type="number" value={countryOrder} onChange={(e) => setcountryOrder(e.target.value)} placeholder='Enter Order' name="countryOrder" id="" className='text-sm w-full border-2 shadow-sm border-gray-300 h-[40px] p-2 rounded-sm mt-1' />
 
-    <div className='mb-5 p-1'>
-        <label for="country_code" className='p-1 block font-medium text-gray-900'>Country Code</label>
-        <input type='number' name='country_code' id='country_code'  className='text-[20px] border-2 py-2.5 px-2 block shadow-md
-         border-gray-400 w-full rounded-lg focus:border-blue-500' placeholder='Country Code' />
-    </div>
-    <button className='text-white bg-purple-500 hover:bg-purple-700 font-medium rounded-lg py-3 px-2 mx-1.5'>Add Country
+                        <button className='text-white cursor-pointer bg-purple-700 border-0 my-5 rounded-sm p-2'>Add Country</button>
+                    </form>
 
-    </button>
-</div>
-
-
-                            </form>
-                            
-                            </div>
-                            </div>
-                </section>
-
-    </div>
-  )
+                </div>
+            </section>
+        </>
+    )
 }
 
-export{Add_Country}
+export { Add_Country }
